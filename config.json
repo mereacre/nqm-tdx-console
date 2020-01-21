@@ -1,0 +1,9 @@
+{
+  "tdxConfig": {
+    "commandServer": "https://cmd.nqminds.com",
+    "ddpServer": "https://ddp.nqminds.com",
+    "queryServer": "https://q.nqminds.com",
+    "tdxServer": "https://tdx.nqminds.com",
+    "accessTokenTTL": 31622400
+  }
+}
