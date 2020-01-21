@@ -119,9 +119,7 @@ module.exports = {
       'react/self-closing-comp': 'error',
       'react/sort-comp': 'error',
       'react/sort-prop-types': 'error',
-  
       'react/no-string-refs': 'warn', // Wishlist, one day.
-  
       'strict': 'off',
       'no-case-declarations': 'off',
       'react/jsx-key': 'off',
