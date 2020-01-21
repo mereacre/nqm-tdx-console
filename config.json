@@ -1,5 +1,5 @@
 {
-  "tokenPath": "https://q.nqminds.com/v1/auth-account?filter=&proj=",
+  "tokenHref": "https://q.nqminds.com/v1/auth-account?filter=&proj=",
   "tdxConfig": {
     "commandServer": "https://cmd.nqminds.com",
     "ddpServer": "https://ddp.nqminds.com",

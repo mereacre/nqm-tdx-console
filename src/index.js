@@ -3,8 +3,10 @@ module.exports = function(config) {
 
   const scraper = require("./scraper");
 
-  function getUserToken() {
-    return scraper.getUserToken(config.tokenPath);
+  async function getUserToken() {
+    const token = await scraper.getUserToken(config.tokenHref);
+
+    return token || "";
   }
 
   return {
