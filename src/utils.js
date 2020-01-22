@@ -2,6 +2,10 @@ const fs = require("fs");
 const dotenv = require("dotenv");
 const path = require("path");
 
+function base64ToJson(baseString) {
+  return JSON.parse(Buffer.from(baseString, "base64").toString());
+}
+
 function filterKeyIdentifiers(envKeys, identifier) {
   const filteredKeys = {};
 
@@ -30,7 +34,14 @@ function getTdxTokens(tdxKeys) {
 }
 
 function getTdxSecrets(tdxKeys) {
-  return filterKeyIdentifiers(tdxKeys, "TDX_SECRET");
+  const tdxSecrets = {};
+  const filteredKeys = filterKeyIdentifiers(tdxKeys, "TDX_SECRET");
+
+  Object.keys(filteredKeys).forEach((key) => {
+    console.log(base64ToJson(filteredKeys[key]));
+    tdxSecrets[key] = base64ToJson(filteredKeys[key]);
+  });
+  return tdxSecrets;
 }
 
 function getEnvPath(envFile = ".env") {

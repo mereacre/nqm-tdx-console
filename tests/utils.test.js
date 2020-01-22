@@ -79,13 +79,13 @@ test("getTdxTokens should return {ALIAS: 'token_value'} for {TDX_TOKEN_ALIAS: 't
 });
 
 test("getTdxSecrets should return {} for {}", () => {
-  const input = {};
+  const input = Buffer.from(JSON.stringify({})).toString("base64");
   const output = utils.getTdxSecrets(input);
   expect(output).toStrictEqual({});
 });
 
 test("getTdxSecrets should return {ALIAS: 'token_value'} for {TDX_SECRET_ALIAS: 'token_value'}", () => {
-  const input = {TDX_SECRET_ALIAS: "token_value"};
+  const input = Buffer.from(JSON.stringify({TDX_SECRET_ALIAS: "token_value"})).toString("base64");
   const output = utils.getTdxSecrets(input);
   expect(output).toStrictEqual({ALIAS: "token_value"});
 });
