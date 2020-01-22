@@ -2,6 +2,37 @@ const fs = require("fs");
 const dotenv = require("dotenv");
 const path = require("path");
 
+function filterKeyIdentifiers(envKeys, identifier) {
+  const filteredKeys = {};
+
+  Object.keys(envKeys).forEach((key) => {
+    if (key.indexOf(`${identifier}_`) === 0) {
+      const alias = key.slice(identifier.length + 1);
+      if (alias !== "")
+        filteredKeys[alias] = envKeys[key];
+    }
+  });
+
+  return filteredKeys;
+}
+
+function getTdxKeys(envConfig) {
+  const tdxKeys = {};
+  Object.keys(envConfig).forEach((key) => {
+    if (key.indexOf("TDX_") === 0)
+      tdxKeys[key] = envConfig[key];
+  });
+  return tdxKeys;
+}
+
+function getTdxTokens(tdxKeys) {
+  return filterKeyIdentifiers(tdxKeys, "TDX_TOKEN");
+}
+
+function getTdxSecrets(tdxKeys) {
+  return filterKeyIdentifiers(tdxKeys, "TDX_SECRET");
+}
+
 function getEnvPath(envFile = ".env") {
   return path.resolve(process.cwd(), envFile);
 }
@@ -10,11 +41,12 @@ function toEnvString(envConfig) {
   let envString = "";
 
   Object.keys(envConfig).forEach((key) => {
-    envString = `${key}=${envConfig[key]}\n`;
+    envString = `${envString}${key}=${envConfig[key]}\n`;
   });
 
   return envString;
 }
+
 function readEnv(envPath) {
   return dotenv.parse(fs.readFileSync(envPath));
 }
@@ -35,4 +67,9 @@ function setEnv(key, value) {
 
 module.exports = {
   setEnv,
+  toEnvString,
+  getTdxKeys,
+  getTdxTokens,
+  getTdxSecrets,
+  filterKeyIdentifiers,
 };
