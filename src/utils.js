@@ -38,7 +38,6 @@ function getTdxSecrets(tdxKeys) {
   const filteredKeys = filterKeyIdentifiers(tdxKeys, "TDX_SECRET");
 
   Object.keys(filteredKeys).forEach((key) => {
-    console.log(base64ToJson(filteredKeys[key]));
     tdxSecrets[key] = base64ToJson(filteredKeys[key]);
   });
   return tdxSecrets;
