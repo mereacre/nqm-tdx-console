@@ -1,4 +1,4 @@
-module.exports = function() {
+module.exports = function(envConfig, tdxConfigs) {
   "use strict";
 
   const utils = require("./utils");
@@ -15,7 +15,7 @@ module.exports = function() {
     return api;
   }
 
-  async function connect({envConfig, alias, tdxConfigs}) {
+  async function connect(alias) {
     const aliasUpper = alias.toUpperCase();
     const tdxKeys = utils.getTdxKeys(envConfig);
     const tdxTokens = utils.getTdxTokens(tdxKeys);
@@ -32,5 +32,7 @@ module.exports = function() {
 
   return {
     connect,
+    connectWithToken,
+    connectWithSecret,
   };
 };

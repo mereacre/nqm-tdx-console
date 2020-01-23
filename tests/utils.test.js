@@ -87,6 +87,5 @@ test("getTdxSecrets should return {} for {}", () => {
 test("getTdxSecrets should return {ALIAS: {a: 'b'}} for {TDX_SECRET_ALIAS: {a: 'b'}}", () => {
   const input = {TDX_SECRET_ALIAS: Buffer.from(JSON.stringify({a: "b"})).toString("base64")};
   const output = utils.getTdxSecrets(input);
-  console.log(output);
   expect(output).toStrictEqual({ALIAS: {a: "b"}});
 });
