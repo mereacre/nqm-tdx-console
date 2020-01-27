@@ -1,4 +1,5 @@
 const utils = require("../src/utils");
+const {TDX_TOKEN, TDX_SECRET} = require("../src/constants");
 
 test("toEnvString should return the string 'key=value\\n' for {key: value}", () => {
   const input = {"key": "value"};
@@ -72,8 +73,8 @@ test("getTdxTokens should return {} for {}", () => {
   expect(output).toStrictEqual({});
 });
 
-test("getTdxTokens should return {ALIAS: 'token_value'} for {TDX_TOKEN_ALIAS: 'token_value'}", () => {
-  const input = {TDX_TOKEN_ALIAS: "token_value"};
+test(`getTdxTokens should return {ALIAS: 'token_value'} for {${TDX_TOKEN}_ALIAS: 'token_value'}`, () => {
+  const input = {[`${TDX_TOKEN}_ALIAS`]: "token_value"};
   const output = utils.getTdxTokens(input);
   expect(output).toStrictEqual({ALIAS: "token_value"});
 });
@@ -84,8 +85,8 @@ test("getTdxSecrets should return {} for {}", () => {
   expect(output).toStrictEqual({});
 });
 
-test("getTdxSecrets should return {ALIAS: {a: 'b'}} for {TDX_SECRET_ALIAS: {a: 'b'}}", () => {
-  const input = {TDX_SECRET_ALIAS: Buffer.from(JSON.stringify({a: "b"})).toString("base64")};
+test(`getTdxSecrets should return {ALIAS: {a: 'b'}} for {${TDX_SECRET}_ALIAS: {a: 'b'}}`, () => {
+  const input = {[`${TDX_SECRET}_ALIAS`]: Buffer.from(JSON.stringify({a: "b"})).toString("base64")};
   const output = utils.getTdxSecrets(input);
   expect(output).toStrictEqual({ALIAS: {a: "b"}});
 });

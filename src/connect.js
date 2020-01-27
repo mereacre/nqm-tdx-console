@@ -14,19 +14,17 @@ async function connectWithSecret(config, secret) {
   return api;
 }
 
-async function connect({envConfig, tdxConfigs, alias}) {
-  const aliasUpper = alias.toUpperCase();
-  const tdxKeys = utils.getTdxKeys(envConfig);
-  const tdxTokens = utils.getTdxTokens(tdxKeys);
-  const tdxSecrets = utils.getTdxSecrets(tdxKeys);
+async function connect({config, token, secret}) {
+  const tdxToken = token || "";
+  const tdxSecret = secret || {};
 
-  const config = tdxConfigs[aliasUpper];
-
-  if (aliasUpper in tdxTokens) {
-    return this.connectWithToken(config, tdxTokens[aliasUpper]);
-  } else if (aliasUpper in tdxSecrets) {
-    return this.connectWithSecret(config, tdxSecrets[aliasUpper]);
-  } else throw Error("No tdx credentials present!");
+  if (tdxToken) {
+    return this.connectWithToken(config, tdxToken);
+  } else {
+    if (("id" in tdxSecret) && ("secret" in tdxSecret)) {
+      return this.connectWithSecret(config, tdxSecret);
+    } else throw Error("No tdx credentials present!");
+  }
 }
 
 module.exports = {

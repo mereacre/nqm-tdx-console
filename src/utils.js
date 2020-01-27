@@ -1,6 +1,7 @@
 const fs = require("fs");
 const dotenv = require("dotenv");
 const path = require("path");
+const {TDX_TOKEN, TDX_SECRET} = require("./constants");
 
 function base64ToJson(baseString) {
   return JSON.parse(Buffer.from(baseString, "base64").toString());
@@ -30,12 +31,12 @@ function getTdxKeys(envConfig) {
 }
 
 function getTdxTokens(tdxKeys) {
-  return filterKeyIdentifiers(tdxKeys, "TDX_TOKEN");
+  return filterKeyIdentifiers(tdxKeys, TDX_TOKEN);
 }
 
 function getTdxSecrets(tdxKeys) {
   const tdxSecrets = {};
-  const filteredKeys = filterKeyIdentifiers(tdxKeys, "TDX_SECRET");
+  const filteredKeys = filterKeyIdentifiers(tdxKeys, TDX_SECRET);
 
   Object.keys(filteredKeys).forEach((key) => {
     tdxSecrets[key] = base64ToJson(filteredKeys[key]);
