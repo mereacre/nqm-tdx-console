@@ -62,7 +62,7 @@ async function run(commandName, commandProps) {
     if (!alias) throw Error("No alias defined.");
     if (!checkValidAlias(alias)) throw Error("Wrong alias name. Only allowed [a-zA-Z0-9_]");
 
-    const tdxConfig = appConfig.tdxConfigs[alias];
+    const tdxConfig = appConfig.tdxConfigs[alias] || {};
 
     switch (commandName) {
       case "signin":

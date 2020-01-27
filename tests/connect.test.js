@@ -27,28 +27,29 @@ test("connectWithSecret should call the authenticate function", async() => {
 });
 
 test("connect should call connectWithToken function for a token env", async() => {
-  const spy = jest.spyOn(connect, "connectWithToken");
+  expect(TDXApi).not.toHaveBeenCalled();
   connect.connect({
     config: {},
     token: "12345",
     secret: {},
   });
 
-  expect(spy).toHaveBeenCalledWith({}, "12345");
-  spy.mockRestore();
+  expect(TDXApi).toHaveBeenCalledTimes(1);
+  expect(mockAuthenticate).not.toHaveBeenCalled();
 });
 
 test("connect should call connectWithSecret function for a token env", async() => {
   const secret = {id: "a", secret: "b"};
-  const spy = jest.spyOn(connect, "connectWithSecret");
+  expect(TDXApi).not.toHaveBeenCalled();
   connect.connect({
     config: {},
     token: "",
     secret,
   });
 
-  expect(spy).toHaveBeenCalledWith({}, secret);
-  spy.mockRestore();
+  expect(TDXApi).toHaveBeenCalledTimes(1);
+  expect(mockAuthenticate.mock.calls[0][0]).toBe("a");
+  expect(mockAuthenticate.mock.calls[0][1]).toBe("b");
 });
 
 test("connect should throw with empty alias", async() => {
