@@ -38,6 +38,54 @@ test("connect should call connectWithToken function for a token env", async() =>
     alias: "ALIAS",
   });
 
-  expect(spy).toHaveBeenCalled();
+  expect(spy).toHaveBeenCalledWith({}, "12345");
   spy.mockRestore();
+});
+
+test("connect should call connectWithSecret function for a token env", async() => {
+  const secret = {a: "b"};
+  const input = {TDX_SECRET_ALIAS: Buffer.from(JSON.stringify(secret)).toString("base64")};
+  const spy = jest.spyOn(connect, "connectWithSecret");
+  connect.connect({
+    envConfig: input,
+    tdxConfigs: {
+      "ALIAS": {},
+    },
+    alias: "ALIAS",
+  });
+
+  expect(spy).toHaveBeenCalledWith({}, secret);
+  spy.mockRestore();
+});
+
+test("connect should throw with empty alias", async() => {
+  try {
+    await connect.connect({
+      envConfig: {
+        "TDX_TOKEN_ALIAS": "12345",
+      },
+      tdxConfigs: {
+        "ALIAS": {},
+      },
+      alias: "",
+    });
+  } catch (error) {
+    expect(error).toEqual(Error("No tdx credentials present!"));
+  }
+});
+
+test("connect should throw with an invalid alias", async() => {
+  try {
+    await connect.connect({
+      envConfig: {
+        "TDX_TOKEN_ALIAS1": "12345",
+      },
+      tdxConfigs: {
+        "ALIAS2": {},
+      },
+      alias: "ALIAS3",
+    });
+  } catch (error) {
+    expect(error).toEqual(Error("No tdx credentials present!"));
+  }
 });

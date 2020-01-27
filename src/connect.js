@@ -4,8 +4,8 @@ const utils = require("./utils");
 const TDXApi = require("@nqminds/nqm-api-tdx");
 
 function connectWithToken(config, token) {
-  config.accessToken = token;
-  return new TDXApi(config);
+  const connectConfig = {accessToken: token, ...config};
+  return new TDXApi(connectConfig);
 }
 
 async function connectWithSecret(config, secret) {
