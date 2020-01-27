@@ -1,10 +1,24 @@
 {
-  "tokenHref": "https://q.nqminds.com/v1/auth-account?filter=&proj=",
-  "tdxConfig": {
-    "commandServer": "https://cmd.nqminds.com",
-    "ddpServer": "https://ddp.nqminds.com",
-    "queryServer": "https://q.nqminds.com",
-    "tdxServer": "https://tdx.nqminds.com",
-    "accessTokenTTL": 31622400
+  "tdxConfigs": {
+    "nqminds": {
+      "tokenHref": "https://q.nqminds.com/v1/auth-account?filter=&proj=",
+      "config": {
+        "commandServer": "https://cmd.nqminds.com",
+        "ddpServer": "https://ddp.nqminds.com",
+        "queryServer": "https://q.nqminds.com",
+        "tdxServer": "https://tdx.nqminds.com",
+        "accessTokenTTL": 31622400
+      }
+    },
+    "nq_m": {
+      "tokenHref": "https://q.nq-m.com/v1/auth-account?filter=&proj=",
+      "config": {
+        "commandServer": "https://cmd.nq-m.com",
+        "ddpServer": "https://ddp.nq-m.com",
+        "queryServer": "https://q.nq-m.com",
+        "tdxServer": "https://tdx.nq-m.com",
+        "accessTokenTTL": 31622400
+      }
+    }
   }
 }

@@ -90,3 +90,23 @@ test(`getTdxSecrets should return {ALIAS: {a: 'b'}} for {${TDX_SECRET}_ALIAS: {a
   const output = utils.getTdxSecrets(input);
   expect(output).toStrictEqual({ALIAS: {a: "b"}});
 });
+
+test(`checkValidAlias should return true on nqminds`, () => {
+  const output = utils.checkValidAlias("nqminds");
+  expect(output).toBe(true);
+});
+
+test(`checkValidAlias should return false on empty input`, () => {
+  const output = utils.checkValidAlias("");
+  expect(output).toBe(false);
+});
+
+test(`checkValidAlias should return false on nq-m`, () => {
+  const output = utils.checkValidAlias("nq-m");
+  expect(output).toBe(false);
+});
+
+test(`checkValidAlias should return true on nq_m`, () => {
+  const output = utils.checkValidAlias("nq_m");
+  expect(output).toBe(true);
+});

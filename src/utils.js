@@ -3,8 +3,33 @@ const dotenv = require("dotenv");
 const path = require("path");
 const {TDX_TOKEN, TDX_SECRET} = require("./constants");
 
+function getTokenAliasName(alias) {
+  return `${TDX_TOKEN}_${aliasToEnv(alias)}`;
+}
+
+function getSecretAliasName(alias) {
+  return `${TDX_SECRET}_${aliasToEnv(alias)}`;
+}
+
+function envToAlias(envAlias) {
+  return envAlias.toLowerCase();
+}
+
+function aliasToEnv(alias) {
+  return alias.toUpperCase();
+}
+
+function checkValidAlias(alias) {
+  const aliasRegex = new RegExp("^[a-zA-z0-9_]+$");
+  return aliasRegex.test(alias);
+}
+
 function base64ToJson(baseString) {
-  return JSON.parse(Buffer.from(baseString, "base64").toString());
+
+  return (!baseString) ? {} : JSON.parse(Buffer.from(baseString, "base64").toString());
+}
+function jsonToBase64(json) {
+  return Buffer.from(JSON.stringify(json)).toString("base64");
 }
 
 function filterKeyIdentifiers(envKeys, identifier) {
@@ -77,6 +102,13 @@ function setEnv(key, value) {
 }
 
 module.exports = {
+  base64ToJson,
+  jsonToBase64,
+  getTokenAliasName,
+  getSecretAliasName,
+  envToAlias,
+  aliasToEnv,
+  checkValidAlias,
   setEnv,
   toEnvString,
   getTdxKeys,

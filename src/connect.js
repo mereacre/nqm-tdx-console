@@ -1,6 +1,5 @@
 "use strict";
 
-const utils = require("./utils");
 const TDXApi = require("@nqminds/nqm-api-tdx");
 
 function connectWithToken(config, token) {
@@ -19,10 +18,10 @@ async function connect({config, token, secret}) {
   const tdxSecret = secret || {};
 
   if (tdxToken) {
-    return this.connectWithToken(config, tdxToken);
+    return connectWithToken(config, tdxToken);
   } else {
     if (("id" in tdxSecret) && ("secret" in tdxSecret)) {
-      return this.connectWithSecret(config, tdxSecret);
+      return connectWithSecret(config, tdxSecret);
     } else throw Error("No tdx credentials present!");
   }
 }
