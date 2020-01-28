@@ -5,6 +5,12 @@ const signin = require("../src/signin");
 jest.mock("../src/scraper");
 jest.mock("../src/connect");
 
+beforeEach(() => {
+  // Clear all instances and calls to constructor and all methods:
+  connect.connectWithToken.mockClear();
+  connect.connectWithSecret.mockClear();
+});
+
 test("signin should call webSignin function type=web", async() => {
   const apiMock = {accessToken: "12345"};
   connect.connectWithToken.mockResolvedValue(apiMock);

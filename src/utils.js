@@ -25,9 +25,9 @@ function checkValidAlias(alias) {
 }
 
 function base64ToJson(baseString) {
-
   return (!baseString) ? {} : JSON.parse(Buffer.from(baseString, "base64").toString());
 }
+
 function jsonToBase64(json) {
   return Buffer.from(JSON.stringify(json)).toString("base64");
 }

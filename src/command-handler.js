@@ -9,7 +9,7 @@ const {
   base64ToJson,
 } = require("./utils");
 const {connect} = require("./connect");
-const {signin} = require("./src/signin");
+const {signin} = require("./signin");
 const {TDX_CURRENT_ALIAS} = require("./constants");
 
 class CommandHandler {
@@ -49,6 +49,7 @@ class CommandHandler {
       secret,
       type: "secret",
     });
+
     setEnv(getTokenAliasName(this.alias), api.accessToken);
     setEnv(getSecretAliasName(this.alias), jsonToBase64(secret));
   }

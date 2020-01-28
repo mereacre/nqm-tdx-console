@@ -7,14 +7,11 @@ const {TDX_CURRENT_ALIAS} = require("./src/constants");
 const {
   checkValidAlias,
   envToAlias,
-  aliasToEnv,
   getSecretAliasName,
   getTokenAliasName,
-  setEnv,
-  jsonToBase64,
-  base64ToJson} = require("./src/utils");
-const {signin} = require("./src/signin");
-const {connect} = require("./src/connect");
+} = require("./src/utils");
+
+const CommandHandler = require("./src/command-handler");
 
 async function argumentHandler(argv) {
   const command = argv._[0];
@@ -27,32 +24,6 @@ async function argumentHandler(argv) {
   await run(command, commandProps);
 }
 
-async function handleWebSignin({config, tokenHref, alias}) {
-  const api = await signin({config, tokenHref, type: "web"});
-  setEnv(getTokenAliasName(alias), api.accessToken);
-}
-
-async function handleSecretSignin({config, secret, alias}) {
-  const api = await signin({config, secret, type: "secret"});
-  setEnv(getTokenAliasName(alias), api.accessToken);
-  setEnv(getSecretAliasName(alias), jsonToBase64(secret));
-}
-
-async function handleSignin({config, tokenHref, secret, alias}) {
-  if (!secret.id) await handleWebSignin({config, tokenHref, alias});
-  else await handleSecretSignin({config, secret, alias});
-
-  setEnv(TDX_CURRENT_ALIAS, aliasToEnv(alias));
-}
-
-async function handleConnect({config, secret, token}) {
-  secret = base64ToJson(secret || "");
-  token = token || "";
-  const api = await connect({config, secret, token});
-
-  return api;
-}
-
 async function run(commandName, commandProps) {
   const envAlias = envToAlias(process.env[TDX_CURRENT_ALIAS] || "");
   const commandAlias = commandProps.alias;
@@ -63,22 +34,20 @@ async function run(commandName, commandProps) {
     if (!checkValidAlias(alias)) throw Error("Wrong alias name. Only allowed [a-zA-Z0-9_]");
 
     const tdxConfig = appConfig.tdxConfigs[alias] || {};
-
+    const commandHandler = new CommandHandler({
+      alias,
+      tokenHref: tdxConfig.tokenHref,
+      config: tdxConfig.config,
+    });
     switch (commandName) {
       case "signin":
-        await handleSignin({
-          config: tdxConfig.config,
-          tokenHref: tdxConfig.tokenHref,
-          secret: {id: commandProps.id, secret: commandProps.secret},
-          alias,
-        });
+        await commandHandler.handleSignin({id: commandProps.id, secret: commandProps.secret});
         break;
       case "connect":
-        await handleConnect({
-          config: tdxConfig.config,
-          secret: process.env[getSecretAliasName(alias)],
-          token: process.env[getTokenAliasName(alias)],
-        });
+        await commandHandler.handleConnect(
+          process.env[getSecretAliasName(alias)],
+          process.env[getTokenAliasName(alias)]
+        );
         break;
     }
   } catch (error) {
