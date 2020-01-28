@@ -18,6 +18,7 @@ const {
 const CommandHandler = require("./src/command-handler");
 
 async function argumentHandler(argv) {
+  console.log(argv);
   const command = argv._[0];
   const commandProps = {
     alias: argv.alias || "",
@@ -104,6 +105,12 @@ const argv = require("yargs")
     alias: "alias",
     nargs: 1,
     describe: "Alias",
+    type: "string",
+    requiresArg: true,
+  })
+  .option("t", {
+    alias: "auto",
+    describe: "Auto sign in",
     type: "string",
     requiresArg: true,
   })

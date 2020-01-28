@@ -61,7 +61,7 @@ class CommandHandler {
   }
 
   async handleRun(command, args) {
-
+    return {};
   }
 
   async handleInfo() {
