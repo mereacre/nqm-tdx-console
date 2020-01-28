@@ -1,37 +1,40 @@
 "use strict";
 
-const {
-  aliasToEnv,
-  getSecretAliasName,
-  getTokenAliasName,
-  setEnv,
-  jsonToBase64,
-  base64ToJson,
-} = require("./utils");
 const {connect} = require("./connect");
 const {signin} = require("./signin");
-const {TDX_CURRENT_ALIAS} = require("./constants");
+const jwt = require("jsonwebtoken");
 
 class CommandHandler {
-  constructor({alias, tokenHref, config}) {
-    this.alias = alias;
-    this.tokenHref = tokenHref;
-    this.config = config;
+  constructor({tdxConfig, secret, token}) {
+    this.tokenHref = tdxConfig.tokenHref || "";
+    this.config = tdxConfig.config || {};
+    this.secret = secret || {};
+    this.accessToken = token || "";
   }
 
-  async handleConnect(secret, token) {
-    secret = base64ToJson(secret || "");
-    token = token || "";
-    const api = await connect({config: this.config, secret, token});
+  getToken() {
+    return this.accessToken;
+  }
+
+  async handleConnect() {
+    const api = await connect({
+      config: this.config,
+      secret: this.secret,
+      token: this.accessToken,
+    });
+
+    this.accessToken = api.accessToken;
 
     return api;
   }
 
   async handleSignin(secret) {
-    if (!secret.id) await this.handleWebSignin();
-    else await this.handleSecretSignin(secret);
+    const api = (secret.id) ? await this.handleSecretSignin(secret) :
+      await this.handleWebSignin();
 
-    setEnv(TDX_CURRENT_ALIAS, aliasToEnv(this.alias));
+    this.accessToken = api.accessToken;
+
+    return api;
   }
 
   async handleWebSignin() {
@@ -40,7 +43,7 @@ class CommandHandler {
       tokenHref: this.tokenHref,
       type: "web",
     });
-    setEnv(getTokenAliasName(this.alias), api.accessToken);
+    return api;
   }
 
   async handleSecretSignin(secret) {
@@ -49,9 +52,24 @@ class CommandHandler {
       secret,
       type: "secret",
     });
+    return api;
+  }
 
-    setEnv(getTokenAliasName(this.alias), api.accessToken);
-    setEnv(getSecretAliasName(this.alias), jsonToBase64(secret));
+  handleSignout() {
+    this.accessToken = "";
+    this.secret = {};
+  }
+
+  async handleRun(command, args) {
+
+  }
+
+  async handleInfo() {
+    const api = await this.handleConnect();
+    const decoded = jwt.decode(this.accessToken);
+    const output = await api.getAccount(decoded.sub);
+
+    return output;
   }
 }
 
