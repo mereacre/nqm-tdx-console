@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-const connect = require("../src/connect");
+const connect = require("../src/signin/connect");
 const TDXApi = require("@nqminds/nqm-api-tdx");
 
 const mockAuthenticate = jest.fn();

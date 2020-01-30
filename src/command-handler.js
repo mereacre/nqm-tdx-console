@@ -1,13 +1,13 @@
 "use strict";
 
-const {connect} = require("./connect");
-const {signin} = require("./signin");
+const {webWindowSignin, secretSignin, connect} = require("./signin");
 const jwt = require("jsonwebtoken");
 
 class CommandHandler {
-  constructor({tdxConfig, secret, token}) {
+  constructor({tdxConfig, secret, token, timeout}) {
     this.tokenHref = tdxConfig.tokenHref || "";
     this.config = tdxConfig.config || {};
+    this.timeout = timeout || 5000;
     this.secret = secret || {};
     this.accessToken = token || "";
   }
@@ -38,19 +38,16 @@ class CommandHandler {
   }
 
   async handleWebSignin() {
-    const api = await signin({
-      config: this.config,
-      tokenHref: this.tokenHref,
-      type: "web",
-    });
+    const api = await webWindowSignin(this.config, this.tokenHref);
     return api;
   }
 
   async handleSecretSignin(secret) {
-    const api = await signin({
+    const api = await secretSignin({
       config: this.config,
+      tokenHref: this.tokenHref,
+      timeout: this.timeout,
       secret,
-      type: "secret",
     });
     return api;
   }

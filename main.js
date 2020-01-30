@@ -18,7 +18,6 @@ const {
 const CommandHandler = require("./src/command-handler");
 
 async function argumentHandler(argv) {
-  console.log(argv);
   const command = argv._[0];
   const commandProps = {
     alias: argv.alias || "",
@@ -53,6 +52,7 @@ async function run(commandName, commandProps) {
       tdxConfig,
       secret: storedSecret,
       token: storedToken,
+      timeout: 5000,
     });
 
     switch (commandName) {
@@ -63,6 +63,7 @@ async function run(commandName, commandProps) {
         // Store the argument secret
         if (argumentSecret.id) setEnv(getSecretAliasName(alias), jsonToBase64(argumentSecret));
         setEnv(getTokenAliasName(alias), commandHandler.getToken());
+        console.log("OK");
         break;
       case "signout":
         commandHandler.handleSignout();
