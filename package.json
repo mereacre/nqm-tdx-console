@@ -1,6 +1,6 @@
 {
   "name": "nqm-tdx-console",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "TDX console",
   "main": "index.js",
   "directories": {
