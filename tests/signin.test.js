@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const scraper = require("../src/scraper");
 const connect = require("../src/connect");
 const signin = require("../src/signin");

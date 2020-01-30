@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const connect = require("../src/connect");
 const TDXApi = require("@nqminds/nqm-api-tdx");
 

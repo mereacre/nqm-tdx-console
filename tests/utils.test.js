@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+/* eslint-disable no-undef */
 const utils = require("../src/utils");
 const {TDX_TOKEN, TDX_SECRET} = require("../src/constants");
 
