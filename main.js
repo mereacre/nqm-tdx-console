@@ -13,6 +13,8 @@ const {
   setEnv,
   aliasToEnv,
   jsonToBase64,
+  filterObjectByIdentifier,
+  filterListByIdentifier,
 } = require("./src/utils");
 
 const CommandHandler = require("./src/command-handler");
@@ -23,10 +25,12 @@ async function argumentHandler(argv) {
     alias: argv.alias || "",
     id: argv.id || "",
     secret: argv.secret || "",
-    api: argv.api || "",
+    name: argv.name || "",
+    apiArgs: filterObjectByIdentifier(argv, "@"),
+    apiArgsStringify: filterListByIdentifier(argv._.slice(1), "@"),
   };
 
-  console.log(argv);
+  console.log(commandProps);
   await run(command, commandProps);
 }
 
@@ -81,9 +85,11 @@ async function run(commandName, commandProps) {
         console.log(listAliases(appConfig.tdxConfigs));
         break;
       case "runapi":
-        const output = await commandHandler.handleRun(
-          commandProps.command, commandProps.args,
-        );
+        const output = await commandHandler.handleRunApi({
+          name: commandProps.name,
+          apiArgs: commandProps.apiArgs,
+          apiArgsStringify: commandProps.apiArgsStringify,
+        });
         console.log(output);
         break;
     }

@@ -2,6 +2,7 @@
 
 const {webWindowSignin, secretSignin, connect} = require("./signin");
 const jwt = require("jsonwebtoken");
+const {runApi} = require("./runapi");
 
 class CommandHandler {
   constructor({tdxConfig, secret, token, timeout}) {
@@ -57,8 +58,9 @@ class CommandHandler {
     this.secret = {};
   }
 
-  async handleRun(command, args) {
-    return {};
+  async handleRunApi({name, apiArgs, apiArgsStringify}) {
+    const api = await this.handleConnect();
+    return runApi({name, apiArgs, apiArgsStringify, api});
   }
 
   async handleInfo() {

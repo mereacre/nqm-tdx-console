@@ -120,3 +120,33 @@ test("validateEmail should return true on test@gmail.com", () => {
 test("validateEmail should return false on S&*DLdkn@sdu*BD;", () => {
   expect(utils.validateEmail("S&*DLdkn@sdu*BD;")).toBe(false);
 });
+
+test("filterObjectByIdentifier should return {'@1': 1, '@2': 2} for {'@1': 1, '@2': 2, '3': 3}", () => {
+  const filtered = utils.filterObjectByIdentifier({"@1": 1, "@2": 2, "3": 3}, "@");
+  expect(filtered).toEqual({"1": 1, "2": 2});
+});
+
+test("filterObjectByIdentifier should return {} for {}", () => {
+  const filtered = utils.filterObjectByIdentifier({}, "@");
+  expect(filtered).toEqual({});
+});
+
+test("filterObjectByIdentifier should return {} for {'3': 3}", () => {
+  const filtered = utils.filterObjectByIdentifier({"3": 3}, "@");
+  expect(filtered).toEqual({});
+});
+
+test("filterListByIdentifier should return ['1.a', '2'] for ['@1.a', '@2', '3']", () => {
+  const filtered = utils.filterListByIdentifier(["@1.a", "@2", "3"], "@");
+  expect(filtered).toEqual(["1.a", "2"]);
+});
+
+test("filterListByIdentifier should return [] for []", () => {
+  const filtered = utils.filterListByIdentifier([], "@");
+  expect(filtered).toEqual([]);
+});
+
+test("filterListByIdentifier should return {} for ['3']", () => {
+  const filtered = utils.filterListByIdentifier(["3"], "@");
+  expect(filtered).toEqual([]);
+});

@@ -107,6 +107,25 @@ function setEnv(key, value) {
   writeEnv(envConfig, envPath);
 }
 
+function filterObjectByIdentifier(source, identifier) {
+  const filtered = {};
+  const keys = Object.keys(source);
+  keys.forEach((element) => {
+    if (element[0] === identifier) filtered[element.slice(1)] = source[element];
+  });
+
+  return filtered;
+}
+
+function filterListByIdentifier(source, identifier) {
+  const filtered = [];
+  source.forEach((element) => {
+    if (element[0] === identifier) filtered.push(element.slice(1));
+  });
+
+  return filtered;
+}
+
 module.exports = {
   base64ToJson,
   jsonToBase64,
@@ -122,4 +141,6 @@ module.exports = {
   getTdxSecrets,
   filterKeyIdentifiers,
   validateEmail,
+  filterObjectByIdentifier,
+  filterListByIdentifier,
 };
