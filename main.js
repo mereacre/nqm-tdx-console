@@ -26,10 +26,11 @@ async function argumentHandler(argv) {
     api: argv.api || "",
   };
 
+  console.log(argv);
   await run(command, commandProps);
 }
 
-function getAllAliases(configs) {
+function listAliases(configs) {
   return Object.keys(configs);
 }
 
@@ -76,10 +77,10 @@ async function run(commandName, commandProps) {
       case "config":
         console.log(tdxConfig);
         break;
-      case "all":
-        console.log(getAllAliases(appConfig.tdxConfigs));
+      case "list":
+        console.log(listAliases(appConfig.tdxConfigs));
         break;
-      case "run":
+      case "runapi":
         const output = await commandHandler.handleRun(
           commandProps.command, commandProps.args,
         );
@@ -93,31 +94,28 @@ async function run(commandName, commandProps) {
 }
 
 const argv = require("yargs")
+  .parserConfiguration({
+    "parse-numbers": true,
+  })
   .usage("Usage: $0 <command> [options]")
   .command("signin", "Sign in to tdx", {}, argumentHandler)
   .command("signout", "Sign out of tdx", {}, argumentHandler)
   .command("info", "Output current account info", {}, argumentHandler)
   .command("config", "Output tdx config", {}, argumentHandler)
-  .command("all", "Output all aliases names", {}, argumentHandler)
-  .command("run", "Run a tdx api command", {}, argumentHandler)
+  .command("list", "List all configured aliases", {}, argumentHandler)
+  .command("runapi", "Run a tdx api command", {}, argumentHandler)
   .demandCommand(1, 1, "You need at least one command to run.")
   .option("a", {
     alias: "alias",
     nargs: 1,
-    describe: "Alias",
-    type: "string",
-    requiresArg: true,
-  })
-  .option("t", {
-    alias: "auto",
-    describe: "Auto sign in",
+    describe: "Alias name",
     type: "string",
     requiresArg: true,
   })
   .option("i", {
     alias: "id",
     nargs: 1,
-    describe: "Secret id",
+    describe: "Resource or account id",
     type: "string",
     requiresArg: true,
   })
@@ -128,10 +126,10 @@ const argv = require("yargs")
     type: "string",
     requiresArg: true,
   })
-  .option("p", {
-    alias: "api",
+  .option("n", {
+    alias: "name",
     nargs: 1,
-    describe: "TDX api command name",
+    describe: "API command or resource name",
     type: "string",
     requiresArg: true,
   })
