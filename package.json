@@ -2,9 +2,12 @@
   "name": "nqm-tdx-console",
   "version": "0.1.3",
   "description": "TDX console",
-  "main": "index.js",
+  "main": "main.js",
   "directories": {
     "test": "tests"
+  },
+  "bin": {
+    "tdxcli": "./bin/tdxcli.js"
   },
   "dependencies": {
     "@nqminds/nqm-api-tdx": "^0.9.1",

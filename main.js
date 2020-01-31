@@ -1,6 +1,6 @@
 "use strict";
-
 require("dotenv").config();
+
 
 const appConfig = require("./config.json");
 const {TDX_CURRENT_ALIAS} = require("./src/constants");
@@ -23,8 +23,7 @@ async function argumentHandler(argv) {
     alias: argv.alias || "",
     id: argv.id || "",
     secret: argv.secret || "",
-    command: argv.command || "",
-    args: argv.args || "",
+    api: argv.api || "",
   };
 
   await run(command, commandProps);
@@ -129,17 +128,10 @@ const argv = require("yargs")
     type: "string",
     requiresArg: true,
   })
-  .option("c", {
-    alias: "command",
+  .option("p", {
+    alias: "api",
     nargs: 1,
     describe: "TDX api command name",
-    type: "string",
-    requiresArg: true,
-  })
-  .option("g", {
-    alias: "args",
-    nargs: 1,
-    describe: "TDX api command arguments",
     type: "string",
     requiresArg: true,
   })
@@ -148,3 +140,5 @@ const argv = require("yargs")
   .alias("v", "version")
   .epilog("Copyright Nquiringminds Ltd. 2019")
   .argv;
+
+module.exports = argv;
