@@ -17,6 +17,24 @@ test("runApi should throw an exception if name is not in apiCommands", async() =
   }
 });
 
+test("runApi should call getData api with params datasetId, filteropt, projectionopt, optionsopt, ndJSONopt", async() => {
+  const name = "getData";
+  const apiArgs = {
+    "1": "12345",
+    "2": {"a": 1, "b": "test2"},
+    "3": {"a": 1, "b": 0},
+    "4": {"limit": 100, "skip": 23},
+    "5": false,
+  };
+  const apiArgsStringify = ["2.a"];
+  const api = {
+    getData: (...args) => (args),
+  };
+  const output = await runapi.runApi({name, apiArgs, apiArgsStringify, api});
+
+  expect(output).toEqual(["12345", {"a": "1", "b": "test2"}, {"a": 1, "b": 0}, {"limit": 100, "skip": 23}, false]);
+});
+
 test("objectToListMapper should return [['1', 1], ['2', 2], ['3', 3]] for {'2': {}, '1': {}, '3': {}}", async() => {
   const output = runapi.objectToListMapper({"2": {}, "1": {}, "3": {}});
   expect(output).toEqual([["1", 1], ["2", 2], ["3", 3]]);
