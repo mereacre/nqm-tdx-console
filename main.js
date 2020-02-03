@@ -30,7 +30,6 @@ async function argumentHandler(argv) {
     apiArgsStringify: filterListByIdentifier(argv._.slice(1), "@"),
   };
 
-  console.log(commandProps);
   await run(command, commandProps);
 }
 
@@ -59,6 +58,7 @@ async function run(commandName, commandProps) {
       timeout: 5000,
     });
 
+    let output;
     switch (commandName) {
       case "signin":
         await commandHandler.handleSignin(argumentSecret);
@@ -75,8 +75,8 @@ async function run(commandName, commandProps) {
         setEnv(getSecretAliasName(alias), "");
         break;
       case "info":
-        const info = await commandHandler.handleInfo();
-        console.log(info);
+        output = await commandHandler.handleInfo();
+        console.log(output);
         break;
       case "config":
         console.log(tdxConfig);
@@ -85,13 +85,17 @@ async function run(commandName, commandProps) {
         console.log(listAliases(appConfig.tdxConfigs));
         break;
       case "runapi":
-        const output = await commandHandler.handleRunApi({
+        output = await commandHandler.handleRunApi({
           name: commandProps.name,
           apiArgs: commandProps.apiArgs,
           apiArgsStringify: commandProps.apiArgsStringify,
         });
         console.log(output);
         break;
+      case "download":
+        await commandHandler.handleDownload(commandProps.id, commandProps.name);
+        // console.log(output);
+        break;  
     }
   } catch (error) {
     console.error(error);
@@ -110,6 +114,7 @@ const argv = require("yargs")
   .command("config", "Output tdx config", {}, argumentHandler)
   .command("list", "List all configured aliases", {}, argumentHandler)
   .command("runapi", "Run a tdx api command", {}, argumentHandler)
+  .command("download", "Download resource", {}, argumentHandler)
   .demandCommand(1, 1, "You need at least one command to run.")
   .option("a", {
     alias: "alias",
