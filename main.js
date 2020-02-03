@@ -94,8 +94,11 @@ async function run(commandName, commandProps) {
         break;
       case "download":
         await commandHandler.handleDownload(commandProps.id, commandProps.name);
-        // console.log(output);
-        break;  
+        break;
+      case "upload":
+        output = await commandHandler.handleUpload(commandProps.id, commandProps.name);
+        console.log(output);
+        break;
     }
   } catch (error) {
     console.error(error);
@@ -115,6 +118,7 @@ const argv = require("yargs")
   .command("list", "List all configured aliases", {}, argumentHandler)
   .command("runapi", "Run a tdx api command", {}, argumentHandler)
   .command("download", "Download resource", {}, argumentHandler)
+  .command("upload", "Upload resource", {}, argumentHandler)
   .demandCommand(1, 1, "You need at least one command to run.")
   .option("a", {
     alias: "alias",

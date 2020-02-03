@@ -1,8 +1,9 @@
 const fs = require("fs");
 
 async function getResourceStream(resourceId, api) {
-  const {body: resourceStream} = await api.downloadResource(resourceId);
-  return resourceStream;
+  const output = await api.downloadResource(resourceId);
+  if (output.status === 200) return output.body;
+  else throw Error(output.statusText);
 }
 
 async function downloadToFile(resourceStream, filename) {

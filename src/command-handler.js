@@ -4,6 +4,7 @@ const {webWindowSignin, secretSignin, connect} = require("./signin");
 const jwt = require("jsonwebtoken");
 const {runApi} = require("./runapi");
 const {downloadResource} = require("./download");
+const {uploadResource} = require("./upload");
 
 class CommandHandler {
   constructor({tdxConfig, secret, token, timeout}) {
@@ -74,9 +75,12 @@ class CommandHandler {
 
   async handleDownload(id, name) {
     const api = await this.handleConnect();
-    const output = await downloadResource({id, name, api});
+    return downloadResource({id, name, api});
+  }
 
-    return output;
+  async handleUpload(id, name) {
+    const api = await this.handleConnect();
+    return uploadResource({id, filepath: name, api});
   }
 }
 

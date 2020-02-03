@@ -1,7 +1,7 @@
 {
   "tdxConfigs": {
     "nqminds": {
-      "tokenHref": "https://q.nqminds.com/v1/auth-account?filter=&proj=",
+      "tokenHref": "https://tbx.nqminds.com",
       "config": {
         "commandServer": "https://cmd.nqminds.com",
         "ddpServer": "https://ddp.nqminds.com",
@@ -11,7 +11,7 @@
       }
     },
     "nq_m": {
-      "tokenHref": "https://q.nq-m.com/v1/auth-account?filter=&proj=",
+      "tokenHref": "https://tbx.nq-m.com",
       "config": {
         "commandServer": "https://cmd.nq-m.com",
         "ddpServer": "https://ddp.nq-m.com",
