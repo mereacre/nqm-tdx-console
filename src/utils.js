@@ -1,7 +1,9 @@
 const fs = require("fs");
 const dotenv = require("dotenv");
 const path = require("path");
+const util = require("util");
 const {TDX_TOKEN, TDX_SECRET} = require("./constants");
+const writeFile = util.promisify(fs.writeFile);
 
 function validateEmail(email) {
   // eslint-disable-next-line max-len
@@ -126,6 +128,11 @@ function filterListByIdentifier(source, identifier) {
   return filtered;
 }
 
+function writeJsonToFile(jsonData, fileName) {
+  const data = JSON.stringify(jsonData, null, 2);
+  return writeFile(fileName, data);
+}
+
 module.exports = {
   base64ToJson,
   jsonToBase64,
@@ -143,4 +150,5 @@ module.exports = {
   validateEmail,
   filterObjectByIdentifier,
   filterListByIdentifier,
+  writeJsonToFile,
 };

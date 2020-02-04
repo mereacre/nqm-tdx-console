@@ -16,7 +16,12 @@ const {
   filterObjectByIdentifier,
   filterListByIdentifier,
 } = require("./src/utils");
-
+const {
+  listAliases,
+  copyAliasConfig,
+  modifyAliasConfig,
+  removeAliasConfig,
+} = require("./src/alias");
 const CommandHandler = require("./src/command-handler");
 
 async function argumentHandler(argv) {
@@ -33,10 +38,6 @@ async function argumentHandler(argv) {
   await run(command, commandProps);
 }
 
-function listAliases(configs) {
-  return Object.keys(configs);
-}
-
 async function run(commandName, commandProps) {
   const envAlias = envToAlias(process.env[TDX_CURRENT_ALIAS] || "");
   const commandAlias = commandProps.alias;
@@ -45,8 +46,10 @@ async function run(commandName, commandProps) {
   try {
     if (!alias) throw Error("No alias defined.");
     if (!checkValidAlias(alias)) throw Error("Wrong alias name. Only allowed [a-zA-Z0-9_]");
-
-    const argumentSecret = {id: commandProps.id, secret: commandProps.secret};
+    const id = commandProps.id;
+    const secret = commandProps.secret;
+    const name = commandProps.name;
+    const argumentSecret = {id, secret};
     const storedSecret = base64ToJson(process.env[getSecretAliasName(alias)] || "");
     const storedToken = process.env[getTokenAliasName(alias)];
     const tdxConfig = appConfig.tdxConfigs[alias] || {};
@@ -55,7 +58,7 @@ async function run(commandName, commandProps) {
       tdxConfig,
       secret: storedSecret,
       token: storedToken,
-      timeout: 5000,
+      timeout: appConfig.scraperTimeout,
     });
 
     let output;
@@ -82,22 +85,54 @@ async function run(commandName, commandProps) {
         console.log(tdxConfig);
         break;
       case "list":
-        console.log(listAliases(appConfig.tdxConfigs));
+        output = {
+          default: alias,
+          aliases: listAliases(appConfig.tdxConfigs),
+        };
+        console.log(output);
         break;
       case "runapi":
         output = await commandHandler.handleRunApi({
-          name: commandProps.name,
+          name,
           apiArgs: commandProps.apiArgs,
           apiArgsStringify: commandProps.apiArgsStringify,
         });
         console.log(output);
         break;
       case "download":
-        await commandHandler.handleDownload(commandProps.id, commandProps.name);
+        await commandHandler.handleDownload(id, name);
         break;
       case "upload":
-        output = await commandHandler.handleUpload(commandProps.id, commandProps.name);
+        output = await commandHandler.handleUpload(id, name);
         console.log(output);
+        break;
+      case "copyalias":
+        await copyAliasConfig({
+          appConfig,
+          sourceAlias: alias,
+          destinationAlias: name,
+          configFileName: "./config.json",
+        });
+        console.log("OK");
+        break;
+      case "modifyalias":
+        const aliasConfig = commandProps.apiArgs["1"] || {};
+        await modifyAliasConfig({
+          appConfig,
+          modifyAlias: name,
+          aliasConfig,
+          configFileName: "./config.json",
+        });
+        console.log("OK");
+        break;
+      case "removealias":
+        if (alias === name) throw Error("Can't remove the running alias.");
+        await removeAliasConfig({
+          appConfig,
+          removeAlias: name,
+          configFileName: "./config.json",
+        });
+        console.log("OK");
         break;
     }
   } catch (error) {
@@ -119,6 +154,9 @@ const argv = require("yargs")
   .command("runapi", "Run a tdx api command", {}, argumentHandler)
   .command("download", "Download resource", {}, argumentHandler)
   .command("upload", "Upload resource", {}, argumentHandler)
+  .command("copyalias", "Makes a copy of an existing alias configuration", {}, argumentHandler)
+  .command("modifyalias", "Modifies an existing alias configuration", {}, argumentHandler)
+  .command("removealias", "Removes an existing alias configuration", {}, argumentHandler)
   .demandCommand(1, 1, "You need at least one command to run.")
   .option("a", {
     alias: "alias",
