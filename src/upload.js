@@ -36,7 +36,8 @@ async function pipeStream(req, resourceStream) {
       }
     });
     req.on("error", (err) => reject(err));
-    resourceStream.pipe(req).on("error", reject);
+    resourceStream.on("error", (err) => reject(err));
+    resourceStream.pipe(req);
   });
 }
 
@@ -70,4 +71,6 @@ async function uploadResource({id, filepath, api}) {
 
 module.exports = {
   uploadResource,
+  getUploadError,
+  pipeStream,
 };
