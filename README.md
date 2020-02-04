@@ -11,30 +11,26 @@ The client app can be accessed by running the command ```tdxcli```.
 ## Usage
 ```bash
 Usage: tdxcli <command> [options]
+
 Commands:
-  tdxcli signin        Sign in to tdx
-  tdxcli signout       Sign out of tdx
-  tdxcli info          Output current account info
-  tdxcli config        Output tdx config
-  tdxcli list          List all configured aliases
-  tdxcli runapi        Run a tdx api command
-  tdxcli download      Download resource
-  tdxcli upload        Upload resource
-  tdxcli copyalias     Makes a copy of an existing alias configuration
-  tdxcli modifyalias   Modifies an existing alias configuration
-  tdxcli removealias   Removes an existing alias configuration
-  tdxcli stopdatabot   Stops a databot instance
-  tdxcli startdatabot  Starts a databot instance
+  tdxcli signin [id] [secret]                   Sign in to tdx
+  tdxcli signout                                Sign out of tdx
+  tdxcli info [type] [id]                       Output current account info
+  tdxcli config                                 Output tdx config
+  tdxcli list                                   List all configured aliases
+  tdxcli runapi <command>                       Run a tdx api command
+  tdxcli download <id> [filename]               Download resource
+  tdxcli upload <id> <filename>                 Upload resource
+  tdxcli copyalias <aliasname>                  Makes a copy of an existing alias configuration
+  tdxcli modifyalias <aliasname> <configjson>   Modifies an existing alias configuration
+  tdxcli removealias <aliasname>                Removes an existing alias configuration
+  tdxcli stopdatabot <instanceid>               Stops a databot instance
+  tdxcli startdatabot <databotid> <configjson>  Starts a databot instance
 
 Options:
-  -a, --alias    Alias name                                             [string]
-  -i, --id       Resource or account id                                 [string]
-  -s, --secret   Secret value                                           [string]
-  -n, --name     API command or resource name                           [string]
-  -p, --payload  Function payload filename for various commands         [string]
-  -h, --help     Show help                                             [boolean]
-  -v, --version  Show version number                                   [boolean]
-
+  -a, --alias    Alias name                                                                   [string]
+  -h, --help     Show help                                                                   [boolean]
+  -v, --version  Show version number                                                         [boolean]
 ```
 
 ## Documentation

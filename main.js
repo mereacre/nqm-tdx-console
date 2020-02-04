@@ -183,6 +183,7 @@ const argv = require("yargs")
   .alias("h", "help")
   .alias("v", "version")
   .epilog("Copyright Nquiringminds Ltd. 2019")
+  .wrap(102)
   .argv;
 
 module.exports = argv;
