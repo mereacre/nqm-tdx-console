@@ -25,14 +25,18 @@ const {
 const CommandHandler = require("./src/command-handler");
 
 async function argumentHandler(argv) {
-  console.log(argv);
   const command = argv._[0];
   const commandProps = {
     alias: argv.alias || "",
     id: argv.id || "",
     secret: argv.secret || "",
-    name: argv.name || "",
-    payload: argv.payload || "",
+    type: argv.type || "",
+    command: argv.command || "",
+    filename: argv.filename || "",
+    aliasName: argv.aliasname || "",
+    configJson: argv.configjson || "",
+    instanceId: argv.instanceid || "",
+    databotId: argv.databotid || "",
     apiArgs: filterObjectByIdentifier(argv, "@"),
     apiArgsStringify: filterListByIdentifier(argv._.slice(1), "@"),
   };
@@ -41,17 +45,18 @@ async function argumentHandler(argv) {
 }
 
 async function run(commandName, commandProps) {
-  const envAlias = envToAlias(process.env[TDX_CURRENT_ALIAS] || "");
-  const commandAlias = commandProps.alias;
-  const alias = (commandAlias === "") ? envAlias : commandAlias;
+  let alias = commandProps.alias;
+  const {
+    id, secret, type, command, filename,
+    aliasName, configJson, instanceId, databotId,
+  } = commandProps;
+
+  if (alias === "") alias = envToAlias(process.env[TDX_CURRENT_ALIAS] || "");
 
   try {
     if (!alias) throw Error("No alias defined.");
     if (!checkValidAlias(alias)) throw Error("Wrong alias name. Only allowed [a-zA-Z0-9_]");
-    const id = commandProps.id;
-    const secret = commandProps.secret;
-    const name = commandProps.name;
-    const payload = commandProps.payload;
+
     const argumentSecret = {id, secret};
     const storedSecret = base64ToJson(process.env[getSecretAliasName(alias)] || "");
     const storedToken = process.env[getTokenAliasName(alias)];
