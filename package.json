@@ -1,7 +1,7 @@
 {
-  "name": "nqm-tdx-console",
+  "name": "nqm-tdx-api-client",
   "version": "0.2.0",
-  "description": "TDX console",
+  "description": "TDX API client",
   "main": "main.js",
   "directories": {
     "test": "tests"
