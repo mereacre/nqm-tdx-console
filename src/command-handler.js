@@ -5,6 +5,10 @@ const {runApi} = require("./runapi");
 const {downloadResource} = require("./download");
 const {uploadResource} = require("./upload");
 const {getInfo} = require("./info");
+const {
+  stopDatabot,
+  startDatabot,
+} = require("./databot");
 
 class CommandHandler {
   constructor({tdxConfig, secret, token, timeout}) {
@@ -78,6 +82,20 @@ class CommandHandler {
   async handleUpload(id, name) {
     const api = await this.handleConnect();
     return uploadResource({id, filepath: name, api});
+  }
+
+  async handleStopDatabot(id) {
+    const api = await this.handleConnect();
+    return stopDatabot(api, id || "");
+  }
+
+  async handleStartDatabot(id, functionPayload) {
+    const api = await this.handleConnect();
+    return startDatabot({
+      api,
+      id: id || "",
+      functionPayload: functionPayload || {},
+    });
   }
 }
 

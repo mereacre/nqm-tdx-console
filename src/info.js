@@ -12,8 +12,12 @@ function getServerFolderId(id) {
   );
 }
 
-function getDatabotsIds(api) {
- return api.getResources({baseType: /*nqmUtils.constants.databotResourceType*/"databot"}, {}, {});
+async function getDatabotsIds(api) {
+  const filter = {
+    baseType: nqmUtils.constants.databotBaseType,
+  };
+  const result = await api.getResources(filter, {name: 1, id: 1, owner: 1}, {});
+  return JSON.stringify(result, 0, 2);
 }
 
 async function getInfo({api, id, type}) {
@@ -26,7 +30,7 @@ async function getInfo({api, id, type}) {
     case "serverfolderid":
       return getServerFolderId(id);
     case "databotsid":
-      return getDatabotsIds(api);
+      return getDatabotsIds(api, id);
   }
 }
 

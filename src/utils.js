@@ -4,6 +4,7 @@ const path = require("path");
 const util = require("util");
 const {TDX_TOKEN, TDX_SECRET} = require("./constants");
 const writeFile = util.promisify(fs.writeFile);
+const readFile = util.promisify(fs.readFile);
 
 function validateEmail(email) {
   // eslint-disable-next-line max-len
@@ -133,6 +134,11 @@ function writeJsonToFile(jsonData, fileName) {
   return writeFile(fileName, data);
 }
 
+async function readJsonFromFile(fileName) {
+  const data = await readFile(fileName);
+  return JSON.parse(data);
+}
+
 module.exports = {
   base64ToJson,
   jsonToBase64,
@@ -151,4 +157,5 @@ module.exports = {
   filterObjectByIdentifier,
   filterListByIdentifier,
   writeJsonToFile,
+  readJsonFromFile,
 };

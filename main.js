@@ -14,6 +14,7 @@ const {
   jsonToBase64,
   filterObjectByIdentifier,
   filterListByIdentifier,
+  readJsonFromFile,
 } = require("./src/utils");
 const {
   listAliases,
@@ -30,6 +31,7 @@ async function argumentHandler(argv) {
     id: argv.id || "",
     secret: argv.secret || "",
     name: argv.name || "",
+    payload: argv.payload || "",
     apiArgs: filterObjectByIdentifier(argv, "@"),
     apiArgsStringify: filterListByIdentifier(argv._.slice(1), "@"),
   };
@@ -48,6 +50,7 @@ async function run(commandName, commandProps) {
     const id = commandProps.id;
     const secret = commandProps.secret;
     const name = commandProps.name;
+    const payload = commandProps.payload;
     const argumentSecret = {id, secret};
     const storedSecret = base64ToJson(process.env[getSecretAliasName(alias)] || "");
     const storedToken = process.env[getTokenAliasName(alias)];
@@ -96,7 +99,7 @@ async function run(commandName, commandProps) {
           apiArgs: commandProps.apiArgs,
           apiArgsStringify: commandProps.apiArgsStringify,
         });
-        // console.log(JSON.stringify(output, null, 2));
+        console.log(JSON.stringify(output, null, 2));
         break;
       case "download":
         await commandHandler.handleDownload(id, name);
@@ -133,6 +136,15 @@ async function run(commandName, commandProps) {
         });
         console.log("OK");
         break;
+      case "stopdatabot":
+        output = await commandHandler.handleStopDatabot(id);
+        console.log(output);
+        break;
+      case "startdatabot":
+        const functionPayload = await readJsonFromFile(payload);
+        output = await commandHandler.handleStartDatabot(id, functionPayload);
+        console.log(output);
+        break;
     }
   } catch (error) {
     console.error(error);
@@ -156,6 +168,8 @@ const argv = require("yargs")
   .command("copyalias", "Makes a copy of an existing alias configuration", {}, argumentHandler)
   .command("modifyalias", "Modifies an existing alias configuration", {}, argumentHandler)
   .command("removealias", "Removes an existing alias configuration", {}, argumentHandler)
+  .command("stopdatabot", "Stops a databot instance", {}, argumentHandler)
+  .command("startdatabot", "Starts a databot instance", {}, argumentHandler)
   .demandCommand(1, 1, "You need at least one command to run.")
   .option("a", {
     alias: "alias",
@@ -182,6 +196,13 @@ const argv = require("yargs")
     alias: "name",
     nargs: 1,
     describe: "API command or resource name",
+    type: "string",
+    requiresArg: true,
+  })
+  .option("p", {
+    alias: "payload",
+    nargs: 1,
+    describe: "Function payload filename for various commands",
     type: "string",
     requiresArg: true,
   })
