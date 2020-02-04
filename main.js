@@ -1,7 +1,6 @@
 "use strict";
 require("dotenv").config();
 
-
 const appConfig = require("./config.json");
 const {TDX_CURRENT_ALIAS} = require("./src/constants");
 const {
@@ -78,7 +77,7 @@ async function run(commandName, commandProps) {
         setEnv(getSecretAliasName(alias), "");
         break;
       case "info":
-        output = await commandHandler.handleInfo();
+        output = await commandHandler.handleInfo({id, type: name});
         console.log(output);
         break;
       case "config":
@@ -97,7 +96,7 @@ async function run(commandName, commandProps) {
           apiArgs: commandProps.apiArgs,
           apiArgsStringify: commandProps.apiArgsStringify,
         });
-        console.log(output);
+        // console.log(JSON.stringify(output, null, 2));
         break;
       case "download":
         await commandHandler.handleDownload(id, name);

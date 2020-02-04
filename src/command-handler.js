@@ -1,10 +1,10 @@
 "use strict";
 
 const {webWindowSignin, secretSignin, connect} = require("./signin");
-const jwt = require("jsonwebtoken");
 const {runApi} = require("./runapi");
 const {downloadResource} = require("./download");
 const {uploadResource} = require("./upload");
+const {getInfo} = require("./info");
 
 class CommandHandler {
   constructor({tdxConfig, secret, token, timeout}) {
@@ -65,12 +65,9 @@ class CommandHandler {
     return runApi({name, apiArgs, apiArgsStringify, api});
   }
 
-  async handleInfo() {
+  async handleInfo({id, type}) {
     const api = await this.handleConnect();
-    const decoded = jwt.decode(this.accessToken);
-    const output = await api.getAccount(decoded.sub);
-
-    return output;
+    return getInfo({api, type, id});
   }
 
   async handleDownload(id, name) {
