@@ -30,7 +30,7 @@ async function getInfo({api, id, type}) {
     case "serverfolderid":
       return getServerFolderId(id);
     case "databotsid":
-      return getDatabotsIds(api, id);
+      return getDatabotsIds(api);
   }
 }
 

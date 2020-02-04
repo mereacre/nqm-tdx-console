@@ -118,7 +118,7 @@ async function run(commandName, commandProps) {
         console.log("OK");
         break;
       case "modifyalias":
-        const aliasConfig = commandProps.apiArgs["1"] || {};
+        const aliasConfig = await readJsonFromFile(payload);
         await modifyAliasConfig({
           appConfig,
           modifyAlias: name,
