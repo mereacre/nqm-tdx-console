@@ -25,6 +25,7 @@ const {
 const CommandHandler = require("./src/command-handler");
 
 async function argumentHandler(argv) {
+  console.log(argv);
   const command = argv._[0];
   const commandProps = {
     alias: argv.alias || "",
@@ -157,52 +158,24 @@ const argv = require("yargs")
     "parse-numbers": true,
   })
   .usage("Usage: $0 <command> [options]")
-  .command("signin", "Sign in to tdx", {}, argumentHandler)
+  .command("signin [id] [secret]", "Sign in to tdx", {}, argumentHandler)
   .command("signout", "Sign out of tdx", {}, argumentHandler)
-  .command("info", "Output current account info", {}, argumentHandler)
+  .command("info [type] [id]", "Output current account info", {}, argumentHandler)
   .command("config", "Output tdx config", {}, argumentHandler)
   .command("list", "List all configured aliases", {}, argumentHandler)
-  .command("runapi", "Run a tdx api command", {}, argumentHandler)
-  .command("download", "Download resource", {}, argumentHandler)
-  .command("upload", "Upload resource", {}, argumentHandler)
-  .command("copyalias", "Makes a copy of an existing alias configuration", {}, argumentHandler)
-  .command("modifyalias", "Modifies an existing alias configuration", {}, argumentHandler)
-  .command("removealias", "Removes an existing alias configuration", {}, argumentHandler)
-  .command("stopdatabot", "Stops a databot instance", {}, argumentHandler)
-  .command("startdatabot", "Starts a databot instance", {}, argumentHandler)
+  .command("runapi <command>", "Run a tdx api command", {}, argumentHandler)
+  .command("download <id> [filename]", "Download resource", {}, argumentHandler)
+  .command("upload <id> <filename>", "Upload resource", {}, argumentHandler)
+  .command("copyalias <aliasname>", "Makes a copy of an existing alias configuration", {}, argumentHandler)
+  .command("modifyalias <aliasname> <configjson>", "Modifies an existing alias configuration", {}, argumentHandler)
+  .command("removealias <aliasname>", "Removes an existing alias configuration", {}, argumentHandler)
+  .command("stopdatabot <instanceid>", "Stops a databot instance", {}, argumentHandler)
+  .command("startdatabot <databotid> <configjson>", "Starts a databot instance", {}, argumentHandler)
   .demandCommand(1, 1, "You need at least one command to run.")
   .option("a", {
     alias: "alias",
     nargs: 1,
     describe: "Alias name",
-    type: "string",
-    requiresArg: true,
-  })
-  .option("i", {
-    alias: "id",
-    nargs: 1,
-    describe: "Resource or account id",
-    type: "string",
-    requiresArg: true,
-  })
-  .option("s", {
-    alias: "secret",
-    nargs: 1,
-    describe: "Secret value",
-    type: "string",
-    requiresArg: true,
-  })
-  .option("n", {
-    alias: "name",
-    nargs: 1,
-    describe: "API command or resource name",
-    type: "string",
-    requiresArg: true,
-  })
-  .option("p", {
-    alias: "payload",
-    nargs: 1,
-    describe: "Function payload filename for various commands",
     type: "string",
     requiresArg: true,
   })
