@@ -1,6 +1,6 @@
 {
   "name": "nqm-tdx-api-client",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "TDX API client",
   "main": "main.js",
   "directories": {

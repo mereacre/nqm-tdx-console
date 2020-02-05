@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 "use strict";
 require("dotenv").config();
 
@@ -32,7 +33,7 @@ async function argumentHandler(argv) {
     secret: argv.secret || "",
     type: argv.type || "",
     command: argv.command || "",
-    filename: argv.filename || "",
+    filepath: argv.filepath || "",
     aliasName: argv.aliasname || "",
     configJson: argv.configjson || "",
     instanceId: argv.instanceid || "",
@@ -47,7 +48,7 @@ async function argumentHandler(argv) {
 async function run(commandName, commandProps) {
   let alias = commandProps.alias;
   const {
-    id, secret, type, command, filename,
+    id, secret, type, command, filepath,
     aliasName, configJson, instanceId, databotId,
   } = commandProps;
 
@@ -86,7 +87,7 @@ async function run(commandName, commandProps) {
         setEnv(getSecretAliasName(alias), "");
         break;
       case "info":
-        output = await commandHandler.handleInfo({id, type: name});
+        output = await commandHandler.handleInfo({id, type});
         console.log(output);
         break;
       case "config":
@@ -101,54 +102,58 @@ async function run(commandName, commandProps) {
         break;
       case "runapi":
         output = await commandHandler.handleRunApi({
-          name,
+          command,
           apiArgs: commandProps.apiArgs,
           apiArgsStringify: commandProps.apiArgsStringify,
         });
         console.log(JSON.stringify(output, null, 2));
         break;
       case "download":
-        await commandHandler.handleDownload(id, name);
+        await commandHandler.handleDownload(id, filepath);
         break;
       case "upload":
-        output = await commandHandler.handleUpload(id, name);
+        output = await commandHandler.handleUpload(id, filepath);
         console.log(output);
         break;
       case "copyalias":
         await copyAliasConfig({
           appConfig,
-          sourceAlias: alias,
-          destinationAlias: name,
+          alias,
+          aliasName,
           configFileName: "./config.json",
         });
         console.log("OK");
         break;
       case "modifyalias":
-        const aliasConfig = await readJsonFromFile(payload);
+        const aliasConfig = await readJsonFromFile(configJson);
         await modifyAliasConfig({
           appConfig,
-          modifyAlias: name,
+          modifyAlias: aliasName,
           aliasConfig,
           configFileName: "./config.json",
         });
         console.log("OK");
         break;
       case "removealias":
-        if (alias === name) throw Error("Can't remove the running alias.");
+        if (alias === aliasName) throw Error("Can't remove the running alias.");
         await removeAliasConfig({
           appConfig,
-          removeAlias: name,
+          aliasName,
           configFileName: "./config.json",
         });
         console.log("OK");
         break;
+      case "abortdatabot":
+        output = await commandHandler.handleAbortDatabot(instanceId);
+        console.log(output);
+        break;
       case "stopdatabot":
-        output = await commandHandler.handleStopDatabot(id);
+        output = await commandHandler.handleStopDatabot(instanceId);
         console.log(output);
         break;
       case "startdatabot":
-        const functionPayload = await readJsonFromFile(payload);
-        output = await commandHandler.handleStartDatabot(id, functionPayload);
+        const functionPayload = await readJsonFromFile(configJson);
+        output = await commandHandler.handleStartDatabot(databotId, functionPayload);
         console.log(output);
         break;
     }
@@ -169,11 +174,12 @@ const argv = require("yargs")
   .command("config", "Output tdx config", {}, argumentHandler)
   .command("list", "List all configured aliases", {}, argumentHandler)
   .command("runapi <command>", "Run a tdx api command", {}, argumentHandler)
-  .command("download <id> [filename]", "Download resource", {}, argumentHandler)
-  .command("upload <id> <filename>", "Upload resource", {}, argumentHandler)
+  .command("download <id> [filepath]", "Download resource", {}, argumentHandler)
+  .command("upload <id> <filepath>", "Upload resource", {}, argumentHandler)
   .command("copyalias <aliasname>", "Makes a copy of an existing alias configuration", {}, argumentHandler)
   .command("modifyalias <aliasname> <configjson>", "Modifies an existing alias configuration", {}, argumentHandler)
   .command("removealias <aliasname>", "Removes an existing alias configuration", {}, argumentHandler)
+  .command("abortdatabot <instanceid>", "Aborts a databot instance", {}, argumentHandler)
   .command("stopdatabot <instanceid>", "Stops a databot instance", {}, argumentHandler)
   .command("startdatabot <databotid> <configjson>", "Starts a databot instance", {}, argumentHandler)
   .demandCommand(1, 1, "You need at least one command to run.")

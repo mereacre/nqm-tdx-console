@@ -6,8 +6,8 @@ async function getResourceStream(resourceId, api) {
   else throw Error(output.statusText);
 }
 
-async function downloadToFile(resourceStream, filename) {
-  const file = fs.createWriteStream(filename);
+async function downloadToFile(resourceStream, filepath) {
+  const file = fs.createWriteStream(filepath);
   resourceStream.pipe(file);
 }
 
@@ -15,9 +15,9 @@ async function streamToOutput(resourceStream) {
   resourceStream.pipe(process.stdout);
 }
 
-async function downloadResource({id, name, api}) {
+async function downloadResource({id, filepath, api}) {
   const resourceStream = await getResourceStream(id, api);
-  if (name) return downloadToFile(resourceStream, name);
+  if (filepath) return downloadToFile(resourceStream, filepath);
   else streamToOutput(resourceStream);
 }
 

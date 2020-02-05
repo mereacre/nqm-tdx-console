@@ -2,7 +2,7 @@
 Nquiringminds TDX API client application
 
 ## Install
-The best use of tdxcli is to install with npm globally as follows:
+The best use of tdxcli tool is to install it with npm globally as follows:
 ```bash
 npm i -g nqm-tdx-api-client
 ```
@@ -19,11 +19,12 @@ Commands:
   tdxcli config                                 Output tdx config
   tdxcli list                                   List all configured aliases
   tdxcli runapi <command>                       Run a tdx api command
-  tdxcli download <id> [filename]               Download resource
-  tdxcli upload <id> <filename>                 Upload resource
+  tdxcli download <id> [filepath]               Download resource
+  tdxcli upload <id> <filepath>                 Upload resource
   tdxcli copyalias <aliasname>                  Makes a copy of an existing alias configuration
   tdxcli modifyalias <aliasname> <configjson>   Modifies an existing alias configuration
   tdxcli removealias <aliasname>                Removes an existing alias configuration
+  tdxcli abortdatabot <instanceid>              Aborts a databot instance
   tdxcli stopdatabot <instanceid>               Stops a databot instance
   tdxcli startdatabot <databotid> <configjson>  Starts a databot instance
 
@@ -40,7 +41,7 @@ In order to use the ```tdxcli``` app one has to sign into a tdx account with an 
 Usage
 ```bash
 tdxcli signin
-tdxcli signin --id="email/sharetokenid" --secret="the secret"
+tdxcli signin emailorsharetokenid thesecret
 ```
 The first command will open a Chromium browser window, wheares the second will do an automatic signin with the provided credentials. The obtained access token will be stored in the ```.env``` file.
 
@@ -48,7 +49,7 @@ Initially the user has to choose an ```alias``` in order to sign into a given td
 
 ```bash
 tdxcli signin --alias=nqminds
-tdxcli signin --alias=nq_m_ --id="email/sharetokenid" --secret="the secret"
+tdxcli signin emailorsharetokenid thesecret --alias=nq_m
 ```
 
 The aliases configurations are stored in ```config.json```:
@@ -86,7 +87,7 @@ If the optins ```--alias``` is not provided ```tdxcli``` will use default alias 
 tdxcli signin --alias=name
 ```
 
-Note, the signin process will fail if using an email address with added security (for instance signing in with gmail + second factor authentication).
+Note, the sign in process will fail if using an email address with added security (for instance signing in with gmail + second factor authentication).
 
 ### ```signout```
 Usage
@@ -101,17 +102,17 @@ Sign out from the default alias or from the alias given by the name ```name```. 
 Usage
 ```bash
 tdxcli info
-tdxcli info --name=account
-tdxcli info --id=appid --name=serverfolderid
-tdxcli info --name=databotsid
+tdxcli info account
+tdxcli info serverfolderid appid
+tdxcli info databotsid
 ```
 The above command can also be run with the ```--alias``` option.
 
-```tdxcli info``` and ```tdxcli info --name=account``` will output the account information corresponding to the signed in access token.
+```tdxcli info``` and ```tdxcli info account``` will output the account information corresponding to the signed in access token.
 
-```tdxcli info --id=appid --name=serverfolderid``` will return the server folder id for a given application id ```appid```.
+```tdxcli info serverfolderid appid``` will return the server folder id for a given application id ```appid```.
 
-```tdxcli info --name=databotsid``` will return all databot ids.
+```tdxcli info databotsid``` will return all databot ids.
 
 ## ```config```
 Usage
@@ -131,38 +132,37 @@ Lists the default alias and all configured ones.
 ## ```runapi```
 Usage
 ```bash
-tdxcli runapi --name=getAccounts
-tdxcli runapi --name=getData --@1.a="testa" --@1.b="testb" --@2.result=1
-tdxcli runapi --name=getData --@1.a="1" --@1.b="testb" --@2.result=1 -- @1.a
+tdxcli runapi getAccounts
+tdxcli runapi getData --@1.a="testa" --@1.b="testb" --@2.result=1
+tdxcli runapi getData --@1.a="1" --@1.b="testb" --@2.result=1 -- @1.a
 ```
 The above commands can also be run with a given ```--alias``` options.
 
-The ```runapi``` command executes a tdx api function with the name ```--name```. The argumets of the function are encoded using ```--@n```, where ```n``` is the index of the argument starting from ```1```.
+The ```runapi``` command executes a tdx api function. The argumets of the function are encoded using ```--@n```, where ```n``` is the index of the argument starting from ```1```.
 
 For instance ```getData(datasetId, filter, projection, options, ndJSON)``` has ```5``` arguments. The value of each argument can be encoded as
-```--@1=value```,```--@2=value```,```--@3=value```,```--@4=value```,```--@5=value```. If the value is an ovject than one can use the ```dot``` notation fro encoding. For instance if filter equals ```{a: {b: {c: 1}}}``` then it can be encoded as ```--@1.a.b.c=1```.
+```--@1=value```,```--@2=value```,```--@3=value```,```--@4=value```,```--@5=value```. If the value is an object then one can use the ```dot``` notation for encoding. For instance if the ```getData``` filter equals ```{a: {b: {c: 1}}}``` then it can be encoded as ```--@1.a.b.c=1```.
 
 Note, the command line parser tries to identify if an argument value is a number or not. So, if you pass ```--@1="12345"``` it will translate it into the number ```12345```. To solves this problem one has to use the ```--``` symbol at the end of all argument definition and write an additional ```--@.1``` signifying that the arguiment ```1``` should be kept as string. Below is the usage example
 ```bash
-tdxcli runapi --name=apicommand --@1.a="12345" -- @1.a
-
+tdxcli runapi apicommand --@1.a="12345" -- @1.a
 ```
 
 ## ```download```
 Usage
 ```bash
-tdxcli download --id=resourceid
-tdxcli download --id=resourceid --name=outputfilename
+tdxcli download resourceid
+tdxcli download resourceid outputfilename
 ```
 
-The first command will download the resource and output it to ```stdout```. Using this command this command one can save the resource into a file with ```tdxcli download --id=someid >> outfile``` or pipe it into another bash command.
+The first command will download the resource and output it to ```stdout```. Using this command one can save the resource into a file with ```tdxcli download someid >> outfile``` or pipe it into another bash command.
 
 The second command will save the resource into a file given by the name ```outputfilename```.
 
 ## ```upload```
 Usage
 ```bash
-tdxcli upload --id=resourceid --name=filetoupload
+tdxcli upload resourceid filetoupload
 ```
 
 The above command uploads the file ```filetoupload``` into a resource given by the ```resourceid```.
@@ -170,21 +170,21 @@ The above command uploads the file ```filetoupload``` into a resource given by t
 ## ```copyalias```
 Usage
 ```bash
-tdxcli copyalias --name=newalias
-tdxcli copyalais --alias=somealais --name=newalias
+tdxcli copyalias newalias
+tdxcli copyalais newalias --alias=somealais
 ```
 
 The first command makes a copy of the default alias configuration to a ```newalias``` configuration and saves it into ```config.json```.
 
-The second command makes a copy of ```somealias``` condfiguration to a ```newalias``` configuration and saves it into ```config.json```
+The second command makes a copy of ```somealias``` configuration to a ```newalias``` configuration and saves it into ```config.json```
 
 ## ```modifyalias```
 Usage
 ```bash
-tdxcli modifyalias --name=alias --payload=configfile.json
+tdxcli modifyalias aliasname configfile.json
 ```
 
-The above command modifies the ```alias``` configuration using the json from ```configfile.json``` and saves it to ```config.json```.
+The above command modifies the ```aliasname``` configuration using the json from ```configfile.json``` and saves it to ```config.json```.
 
 Example config file ```configfile.json```:
 ```json
@@ -203,15 +203,23 @@ Example config file ```configfile.json```:
 ## ```removealias```
 Usage
 ```bash
-tdxcli removealias --name=alias
+tdxcli removealias aliasname
 ```
 
-The removes the ```alias``` from ```config.json```.
+The removes the ```aliasname``` from ```config.json```.
+
+## ```abortdatabot```
+Usage
+```bash
+tdxcli abortdatabot databotinstanceid
+```
+
+Aborts the databot instance id ```databotinstanceid```.
 
 ## ```stopdatabot```
 Usage
 ```bash
-tdxcli stopdatabot --id=databotinstanceid
+tdxcli stopdatabot databotinstanceid
 ```
 
 Stops the databot instance id ```databotinstanceid```.
@@ -219,10 +227,10 @@ Stops the databot instance id ```databotinstanceid```.
 ## ```startdatabot```
 Usage
 ```bash
-tdxcli startdatabot --id=databotid --payload=databot.json
+tdxcli startdatabot databotid databot.json
 ```
 
-Starts an instance of the databot id ```databotid``` with the configuration file given by the payload ```databot.json```.
+Starts an instance of the databot id ```databotid``` with the configuration file given by the file```databot.json```.
 
 Example databot instance start configuration file:
 ```json

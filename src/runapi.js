@@ -42,12 +42,12 @@ function getFullArgs(apiArgs, apiArgsStringify) {
   return getFunctionArguments(apiArgs);
 }
 
-async function runApi({name, apiArgs, apiArgsStringify, api}) {
-  if (name === "") return apiCommands;
+async function runApi({command, apiArgs, apiArgsStringify, api}) {
+  if (command === "") return apiCommands;
 
-  if (name in apiCommands) {
+  if (command in apiCommands) {
     const fullArgs = getFullArgs(apiArgs, apiArgsStringify);
-    return api[name](...fullArgs);
+    return api[command](...fullArgs);
   } else throw Error("Unknow API command.");
 }
 

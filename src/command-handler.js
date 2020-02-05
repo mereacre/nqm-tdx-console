@@ -6,6 +6,7 @@ const {downloadResource} = require("./download");
 const {uploadResource} = require("./upload");
 const {getInfo} = require("./info");
 const {
+  abortDatabot,
   stopDatabot,
   startDatabot,
 } = require("./databot");
@@ -64,9 +65,9 @@ class CommandHandler {
     this.secret = {};
   }
 
-  async handleRunApi({name, apiArgs, apiArgsStringify}) {
+  async handleRunApi({command, apiArgs, apiArgsStringify}) {
     const api = await this.handleConnect();
-    return runApi({name, apiArgs, apiArgsStringify, api});
+    return runApi({command, apiArgs, apiArgsStringify, api});
   }
 
   async handleInfo({id, type}) {
@@ -74,14 +75,19 @@ class CommandHandler {
     return getInfo({api, type, id});
   }
 
-  async handleDownload(id, name) {
+  async handleDownload(id, filepath) {
     const api = await this.handleConnect();
-    return downloadResource({id, name, api});
+    return downloadResource({id, filepath, api});
   }
 
-  async handleUpload(id, name) {
+  async handleUpload(id, filepath) {
     const api = await this.handleConnect();
-    return uploadResource({id, filepath: name, api});
+    return uploadResource({id, filepath, api});
+  }
+
+  async handleAbortDatabot(id) {
+    const api = await this.handleConnect();
+    return abortDatabot(api, id || "");
   }
 
   async handleStopDatabot(id) {

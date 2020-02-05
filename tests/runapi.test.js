@@ -4,8 +4,8 @@
 const runapi = require("../src/runapi");
 const apiCommands = require("../src/tdx-api-commands");
 
-test("runApi should return apiCommands for name === ''", async() => {
-  const output = await runapi.runApi({name: ""});
+test("runApi should return apiCommands for command === ''", async() => {
+  const output = await runapi.runApi({command: ""});
   expect(output).toEqual(apiCommands);
 });
 
@@ -18,7 +18,7 @@ test("runApi should throw an exception if name is not in apiCommands", async() =
 });
 
 test("runApi should call getData api with params datasetId, filteropt, projectionopt, optionsopt, ndJSONopt", async() => {
-  const name = "getData";
+  const command = "getData";
   const apiArgs = {
     "1": "12345",
     "2": {"a": 1, "b": "test2"},
@@ -30,7 +30,7 @@ test("runApi should call getData api with params datasetId, filteropt, projectio
   const api = {
     getData: (...args) => (args),
   };
-  const output = await runapi.runApi({name, apiArgs, apiArgsStringify, api});
+  const output = await runapi.runApi({command, apiArgs, apiArgsStringify, api});
 
   expect(output).toEqual(["12345", {"a": "1", "b": "test2"}, {"a": 1, "b": 0}, {"limit": 100, "skip": 23}, false]);
 });
