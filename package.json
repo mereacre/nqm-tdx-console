@@ -16,7 +16,7 @@
     "dotenv": "^8.2.0",
     "jsonwebtoken": "^9.0.0",
     "puppeteer": "^2.0.0",
-    "yargs": "^15.1.0"
+    "yargs": "^15.4.1"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.3",
