@@ -14,7 +14,7 @@
     "@nqminds/nqm-core-utils": "^0.5.9",
     "@nqminds/nqm-databot-utils": "^0.2.20",
     "dotenv": "^8.2.0",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "puppeteer": "^2.0.0",
     "yargs": "^15.1.0"
   },
